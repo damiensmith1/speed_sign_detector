@@ -3,3 +3,5 @@
 January 18th 2024
 - Changing scope from stop signs to speed signs
 - Using YOLOv8 model
+- Issue with finding a large enough dataset
+  solution: have two different models. One identifies if a speed sign exist and the other classifies the speed type
