@@ -1,11 +1,17 @@
 #Meeting Notes
 
 January 18th 2024
+
 - Changing scope from stop signs to speed signs
 - Using YOLOv8 model
 - Starting to discuss specifics of datasets
 - Issue with finding a large enough dataset
 - Solution: breaking model into two components due to the lack of appropriate training data
-    - 1 for the identification of a speed sign
-    - 1 for the classification of the value of the speed sign
+  - 1 for the identification of a speed sign
+  - 1 for the classification of the value of the speed sign
 - Initializing codebase
+
+Feb 3rd 2024
+
+- Web scrape images for speed signs
+- Starting to organize data
