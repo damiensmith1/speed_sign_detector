@@ -14,7 +14,7 @@ model_path = "model_weights.pth"
 model.load_state_dict(torch.load(model_path))
 
 yolo_model = torch.hub.load(
-    "ultralytics/yolov5", "custom", path="../yolov5/runs/train/exp6/weights/best.pt"
+    "ultralytics/yolov5", "custom", path="../yolov5/runs/train/exp/weights/best.pt"
 )
 
 yolo_model.eval()
