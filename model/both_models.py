@@ -19,13 +19,7 @@ yolo_model = torch.hub.load(
 
 yolo_model.eval()
 model.eval()
-# data\sign_vs_no\test\images\1708123207838.jpg 100
-# C:\Users\smith\Documents\CAPSTONE\data\sign_vs_no\test\images\1708123264757.jpg // 40
-# C:\Users\smith\Documents\CAPSTONE\data\onlysigns\test\50\1708122553065.jpg
-# C:\Users\smith\Documents\CAPSTONE\data\Screenshot 2024-03-10 214019.jpg 40
-# C:\Users\smith\Documents\CAPSTONE\data\sign_vs_no\test\images\1708123166253.jpg 50
-# C:\Users\smith\Documents\CAPSTONE\data\Screenshot 2024-03-10 215022.jpg
-test_img = Image.open("../data/sign_vs_no/test/images/1708123207838.jpg")
+test_img = Image.open("../")
 results = yolo_model(test_img)
 print(results)
 
@@ -45,7 +39,6 @@ if len(detections) > 0:
         [
             transforms.Resize((300, 300)),
             transforms.ToTensor(),
-            # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
     )
 

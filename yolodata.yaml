@@ -1,0 +1,6 @@
+path: ../data
+train: sign_vs_no/train/images
+val: sign_vs_no/test/images
+
+nc: 1
+names: ["speed sign"]
