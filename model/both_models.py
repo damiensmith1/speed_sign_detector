@@ -19,34 +19,41 @@ yolo_model = torch.hub.load(
 
 yolo_model.eval()
 model.eval()
-# data\sign_vs_no\test\images\1708123207838.jpg
+# data\sign_vs_no\test\images\1708123207838.jpg 100
 # C:\Users\smith\Documents\CAPSTONE\data\sign_vs_no\test\images\1708123264757.jpg // 40
+# C:\Users\smith\Documents\CAPSTONE\data\onlysigns\test\50\1708122553065.jpg
+# C:\Users\smith\Documents\CAPSTONE\data\Screenshot 2024-03-10 214019.jpg 40
+# C:\Users\smith\Documents\CAPSTONE\data\sign_vs_no\test\images\1708123166253.jpg 50
+# C:\Users\smith\Documents\CAPSTONE\data\Screenshot 2024-03-10 215022.jpg
 test_img = Image.open("../data/sign_vs_no/test/images/1708123207838.jpg")
 results = yolo_model(test_img)
 print(results)
 
-xyxy = results.xyxy[0][0]  # This selects the first detection
+detections = results.xyxy[0]
 
-# Convert coordinates to a list of Python floats
-# Then convert floats to integers since PIL expects integers for pixel indices
-box = [int(coordinate.item()) for coordinate in xyxy]
+if len(detections) > 0:
+    highest_confidence = max(detections, key=lambda detection: detection[4])
+    xyxy = highest_confidence[:4]
 
-# Crop the image
-crop_img = test_img.crop((box[0], box[1], box[2], box[3]))
+    box = [int(coordinate.item()) for coordinate in xyxy]
 
-crop_img.save("cropped_image.jpg")
+    crop_img = test_img.crop((box[0], box[1], box[2], box[3]))
 
-transform = transforms.Compose(
-    [
-        transforms.Resize((300, 300)),  # Resize to the desired size
-        transforms.ToTensor(),  # Convert PIL Image to Tensor
-        # Normalize if required. Example normalization for pretrained models on ImageNet:
-        # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ]
-)
+    crop_img.save("cropped_image.jpg")
 
-crop_img_tensor = transform(crop_img).unsqueeze(0)
+    transform = transforms.Compose(
+        [
+            transforms.Resize((300, 300)),
+            transforms.ToTensor(),
+            # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
 
-classifier_output = model(crop_img_tensor)
-_, predicted = torch.max(classifier_output.data, 1)
-print(predicted)
+    crop_img_tensor = transform(crop_img).unsqueeze(0)
+    with torch.no_grad():
+        classifier_output = model(crop_img_tensor)
+        _, predicted = torch.max(classifier_output.data, 1)
+        result = predicted.item()
+        print(result)
+else:
+    print("No detections!")

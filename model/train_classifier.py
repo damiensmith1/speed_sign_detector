@@ -5,6 +5,7 @@ from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
 import numpy as np
 import matplotlib.pyplot as plt
+from custom_dataset import CustomDataset
 
 
 class AddGaussianNoise(object):
@@ -22,7 +23,12 @@ train_transforms = transforms.Compose(
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ]
 )
-train_dataset = ImageFolder(root="../data/onlysigns/train", transform=train_transforms)
+
+
+data_dir = "../data/onlysigns/train/all"
+label_file = "../data/onlysigns/train/labels.txt"
+train_dataset = CustomDataset(data_dir, label_file, transform=train_transforms)
+
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 
 model = torchvision.models.resnet18(weights="ResNet18_Weights.DEFAULT")
@@ -59,7 +65,7 @@ if __name__ == "__main__":
         print(f"Epoch {epoch+1}/{num_epochs}, Loss: {epoch_loss:.4f}")
 
     print("Finished Training")
-    model_path = "model_weights2.pth"
+    model_path = "model_weights.pth"
     torch.save(model.state_dict(), model_path)
     print(f"Model weights saved to {model_path}")
     plt.plot(losses, label="Training Loss")
