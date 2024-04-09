@@ -7,17 +7,18 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
+import time
 
 
 model = torchvision.models.resnet18(weights="ResNet18_Weights.DEFAULT")
 num_ftrs = model.fc.in_features
 model.fc = torch.nn.Linear(num_ftrs, 4)
 
-model_path = "./model/model_weights.pth"
+model_path = "../model/model_weights.pth"
 model.load_state_dict(torch.load(model_path))
 
 yolo_model = torch.hub.load(
-    "ultralytics/yolov5", "custom", path="./yolov5/runs/train/exp/weights/best.pt"
+    "ultralytics/yolov5", "custom", path="../yolov5/runs/train/exp/weights/best.pt"
 )
 
 transform = transforms.Compose(
@@ -31,8 +32,8 @@ transform = transforms.Compose(
 yolo_model.eval()
 model.eval()
 
-input_video_path = "60-example.mp4"
-output_video_path = "60-demo.mp4"
+input_video_path = "../good_100.mp4"
+output_video_path = "../100_demo2.mp4"
 
 cap = cv2.VideoCapture(input_video_path)
 
@@ -54,10 +55,9 @@ while cap.isOpened():
 
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     img_pil = Image.fromarray(frame_rgb)
-
+    # start_time = time.time()
     results = yolo_model(img_pil)
     detections = results.xyxy[0].cpu().numpy()
-
     for detection in detections:
         x1, y1, x2, y2, conf, class_id = map(int, detection[:6])
 
@@ -68,16 +68,18 @@ while cap.isOpened():
             classifier_output = model(crop_img_tensor)
             _, predicted = torch.max(classifier_output.data, 1)
             result = predicted.item()
-
-        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        # end_time = time.time()
+        # duration = end_time - start_time
+        # print(f"The code segment took {duration} seconds to run.")
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
         cv2.putText(
             frame,
             f"Speed: {label_map[result]:.2f}",
             (x1, y1 - 10),
             cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (0, 255, 0),
-            2,
+            1.5,
+            (0, 0, 255),
+            3,
         )
 
     out.write(frame)
